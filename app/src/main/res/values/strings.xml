@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ROOM database in Android using java</string>
+    <string name="APP_NAME_NEW">Notes app</string>
 </resources>
