@@ -1,14 +1,19 @@
 package com.example.roomdatabaseinandroidusingjava.ui;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,6 +22,8 @@ import com.example.roomdatabaseinandroidusingjava.room.Note;
 import com.example.roomdatabaseinandroidusingjava.ui.viewAdapter.NoteAdapter;
 import com.example.roomdatabaseinandroidusingjava.viewModel.NoteViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        NoteAdapter adapter = new NoteAdapter();
+        final NoteAdapter adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
 
         setTitle("Notes app");
@@ -45,9 +52,26 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Note> notes) {
                 //update RecycleView
                 adapter.setNotes(notes);
-                Toast.makeText(MainActivity.this, "Changed!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Changed!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            //In future I will try to implement different background color for swipping delete activity
+            //And also I will add a feature to undo one deleted note a time
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                 noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Note deleted!", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
 
         FloatingActionButton btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +98,25 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Note saved!", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "Note not saved!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.delete_all_notes:
+                noteViewModel.deleteAllNotes();
+                Toast.makeText(this, "All notes deleted!", Toast.LENGTH_SHORT).show();
+                return  true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
