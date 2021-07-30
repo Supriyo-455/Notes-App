@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private NoteViewModel noteViewModel;
     public static final int ADD_NOTE_REQUEST = 1;
+    public static final int EDIT_NOTE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +69,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-                 noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(MainActivity.this, "Note deleted!", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Note note) {
+                Intent intent = new Intent(MainActivity.this, NoteActivity.class);
+                intent.putExtra(NoteActivity.EXTRA_TITLE, note.getTitle());
+                intent.putExtra(NoteActivity.EXTRA_DESCRIPTION, note.getDescription());
+                intent.putExtra(NoteActivity.EXTRA_PRIORITY, note.getPriority());
+                intent.putExtra(NoteActivity.EXTRA_ID, note.getId());
+                startActivityForResult(intent, EDIT_NOTE_REQUEST);
+            }
+        });
 
         FloatingActionButton btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
             String priority = data.getStringExtra(NoteActivity.EXTRA_PRIORITY);
@@ -96,7 +109,24 @@ public class MainActivity extends AppCompatActivity {
             noteViewModel.insert(note);
 
             Toast.makeText(this, "Note saved!", Toast.LENGTH_SHORT).show();
-        }else{
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(NoteActivity.EXTRA_ID, -1);
+
+            if(id==-1){
+                Toast.makeText(this, "Not can't be updated!", Toast.LENGTH_SHORT).show();
+                return;
+            }else{
+                String title = data.getStringExtra(NoteActivity.EXTRA_TITLE);
+                String description = data.getStringExtra(NoteActivity.EXTRA_DESCRIPTION);
+                String priority = data.getStringExtra(NoteActivity.EXTRA_PRIORITY);
+
+                Note note = new Note(title, description, priority);
+                note.setId(id);
+                noteViewModel.update(note);
+
+                Toast.makeText(this, "Note updated!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
             Toast.makeText(this, "Note not saved!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -110,11 +140,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.delete_all_notes:
                 noteViewModel.deleteAllNotes();
                 Toast.makeText(this, "All notes deleted!", Toast.LENGTH_SHORT).show();
-                return  true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -14,10 +14,13 @@ import android.widget.Toast;
 
 import com.example.roomdatabaseinandroidusingjava.R;
 
+import java.util.Objects;
+
 public class NoteActivity extends AppCompatActivity {
 
     private EditText et_title, et_description;
     private NumberPicker numberPicker;
+    public static final String EXTRA_ID = "com.example.roomdatabaseinandroidusingjava.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "com.example.roomdatabaseinandroidusingjava.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION =
@@ -37,8 +40,18 @@ public class NoteActivity extends AppCompatActivity {
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(10);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add note");
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
+
+        Intent intent = getIntent();
+
+        if(intent.hasExtra(EXTRA_ID)){
+            setTitle("Edit Note");
+            et_title.setText(intent.getStringExtra(EXTRA_TITLE));
+            et_description.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            numberPicker.setValue(Integer.parseInt(intent.getStringExtra(EXTRA_PRIORITY)));
+        }else{
+            setTitle("Add note");
+        }
     }
 
     @Override
@@ -71,6 +84,11 @@ public class NoteActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_TITLE, title);
         intent.putExtra(EXTRA_DESCRIPTION,description);
         intent.putExtra(EXTRA_PRIORITY,priority);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if(id!=-1){
+            intent.putExtra(EXTRA_ID, id);
+        }
 
         setResult(RESULT_OK, intent);
         finish();
