@@ -13,8 +13,8 @@
 
 ### Screenshots
 <p float="left">
-  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-17-48-656_com.example.roomdatabaseinandroidusingjava.jpg" width="300">
-  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-17-53-379_com.example.roomdatabaseinandroidusingjava.jpg" width="300" />
-  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-19-15-239_com.example.roomdatabaseinandroidusingjava.jpg" width="300" /> 
+  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-17-48-656_com.example.roomdatabaseinandroidusingjava.jpg" width="200">
+  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-17-53-379_com.example.roomdatabaseinandroidusingjava.jpg" width="200" />
+  <img src="https://github.com/Supriyo-455/Notes-App/blob/main/Screenshot_2021-08-06-14-19-15-239_com.example.roomdatabaseinandroidusingjava.jpg" width="200" /> 
 </p>
 
