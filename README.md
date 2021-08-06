@@ -3,7 +3,8 @@
 ## You can 
 ### 1. add
 ### 2. Delete
-### 3. Update  ## Notes in your android devices
+### 3. Update  
+## Notes in your android devices
 
 ## It displays notes as Recycler View
 ## uses Room library to work with sqlite database
