@@ -1,7 +1,7 @@
 # Notes-App
 
 ## You can 
-### 1. add
+### 1. Add
 ### 2. Delete
 ### 3. Update  
 ## Notes in your android devices
